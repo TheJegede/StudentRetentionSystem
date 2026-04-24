@@ -7,12 +7,12 @@ Pages:
   4. Model Performance     — confusion matrix, ROC, feature importance, bias audit
 """
 
+import json
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
-import joblib
 from sklearn.metrics import confusion_matrix, roc_curve, auc
 
 st.set_page_config(
@@ -44,9 +44,10 @@ def load_data():
     return preds, info, features, master
 
 
-@st.cache_resource
+@st.cache_data
 def load_artifact():
-    return joblib.load('models/retention_model.pkl')
+    with open('models/model_metadata.json') as f:
+        return json.load(f)
 
 
 def fairness_metrics(df, group_col):
