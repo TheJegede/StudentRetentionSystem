@@ -32,16 +32,9 @@ PAGES = ["Institution Overview", "At-Risk Students", "Student Detail", "Model Pe
 
 @st.cache_data
 def load_data():
-    preds = pd.read_csv('data/output/predictions.csv')
-    info = pd.read_csv(
-        'data/raw/studentInfo.csv',
-        usecols=['code_module', 'code_presentation', 'id_student',
-                 'gender', 'age_band', 'imd_band', 'region',
-                 'highest_education', 'disability', 'final_result'],
-    )
+    preds    = pd.read_csv('data/output/predictions.csv')
     features = pd.read_csv('data/processed/feature_matrix.csv')
-    master = preds.merge(info.drop(columns=['final_result']), on=KEY_COLS, how='left')
-    return preds, info, features, master
+    return preds, features
 
 
 @st.cache_data
@@ -89,7 +82,8 @@ def color_risk_cell(val):
 # Bootstrap
 # ---------------------------------------------------------------------------
 
-preds, info, features, master = load_data()
+preds, features = load_data()
+master = preds  # demographics already merged into predictions.csv
 artifact = load_artifact()
 
 if 'detail_student' not in st.session_state:
